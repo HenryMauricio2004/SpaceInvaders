@@ -1,6 +1,7 @@
 package Nave.Alien.FactoryDirector;
 
 import Nave.Alien.Alien;
+import Nave.Alien.AlienBonus;
 import Nave.Alien.AlienFactory.*;
 import Nave.Alien.enumAliens;
 
@@ -42,22 +43,14 @@ public class AlienFactoryDirector {
         switch(tipoAlien){
             case ALIEN_PEQUENO:
                 nuevoAlien = alienPequenoFactory.createAlien();
-                System.out.println("se ha creado un nuevo Alien de puntos: " + nuevoAlien.getValuePoints());
                 break;
 
             case ALIEN_MEDIANO:
                 nuevoAlien = alienMedianoFactory.createAlien();
-                System.out.println("se ha creado un nuevo Alien de puntos: " + nuevoAlien.getValuePoints());
                 break;
 
             case ALIEN_GRANDE:
                 nuevoAlien = alienGrandeFactory.createAlien();
-                System.out.println("se ha creado un nuevo Alien de puntos: " + nuevoAlien.getValuePoints());
-                break;
-
-            case NAVE_BONUS:
-                nuevoAlien = alienBonusFactory.createAlien();
-                System.out.println("se ha creado un nuevo Alien de puntos: " + nuevoAlien.getValuePoints());
                 break;
 
             default:
@@ -68,7 +61,13 @@ public class AlienFactoryDirector {
         return nuevoAlien;
     }
 
-    public ArrayList<Alien> crearHorda(){
+    public AlienBonus crearAlienBonus(int initialSpeed){
+        AlienBonus alienBonus = alienBonusFactory.createAlien();
+        alienBonus.setxSpeed(initialSpeed);
+        return alienBonus;
+    }
+
+    public ArrayList<Alien> crearHorda(int initialSpeed){
 
         int filas = 5;
         int columnas = 9;
@@ -92,6 +91,7 @@ public class AlienFactoryDirector {
                 Alien nuevoAlien = crearAlien(alien);
                 nuevoAlien.setPosicion(xInicial + (espacioEntreColumnas * j), yInicial + (espacioEntreFilas * i));
                 nuevoAlien.setPosicionInicialX(xInicial + (espacioEntreColumnas  * j));
+                nuevoAlien.setxSpeed(initialSpeed);
                 horda.add(nuevoAlien);
 
             }

@@ -3,12 +3,12 @@ package Nave.Player;
 import Escena.Mediator;
 import Nave.Ship;
 import Nave.enumDirecciones;
-import javafx.scene.image.Image;
+import Sprites.SpriteInterfaces.PlayerSpriteInterface;
 
 /**
  * Clase de nave Jugador
  */
-public class Player extends Ship {
+public class Player extends Ship implements PlayerSpriteInterface {
     private int p;
     private String id;
     private Mediator mediador = Mediator.getInstance();
@@ -17,8 +17,8 @@ public class Player extends Ship {
      * Constructor de la clase Player, donde definimos que tendra 3 de nivelVida y su velocidad inicial es 0
      */
     public Player() {
-        super(3, 20, 200, 650);
-        setSprite(new Image("C:\\Users\\henry\\Documents\\java\\spaceInvaders\\src\\main\\java\\Sprites\\player.png"));
+        super(1, 20, 200, 650);
+        setSprite(spriteJugador);
     }
 
     public void disparar(){

@@ -1,13 +1,13 @@
 package Proyectil;
 
 import GameObject.GameObject;
-import javafx.scene.image.Image;
+import Sprites.SpriteInterfaces.ProyectilSpriteInterface;
 import Escena.Mediator;
 import javafx.scene.image.ImageView;
 
 import static java.lang.Math.round;
 
-public class Proyectil extends GameObject {
+public class Proyectil extends GameObject implements ProyectilSpriteInterface {
 
     private int velocidad = 5;
     private String naveOrigen;
@@ -29,7 +29,7 @@ public class Proyectil extends GameObject {
         int[] posicionInicial = {posicionNave[0] + (int)(spriteNave.getImage().getWidth()/2) -2, posicionNave[1]};
 
         super.setPosicion(posicionInicial);
-        setSprite(new Image("C:\\Users\\henry\\Documents\\java\\spaceInvaders\\src\\main\\java\\Sprites\\proyectil.png"));
+        setSprite(spriteProyectil);
     }
 
 

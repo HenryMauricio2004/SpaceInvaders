@@ -12,37 +12,44 @@ import Nave.enumDirecciones;
 
 
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import Sprites.SpriteInterfaces.PlayerSpriteInterface;
 
 
+public class HelloController implements Initializable, PlayerSpriteInterface{
 
-public class HelloController implements Initializable {
-
-    private final int max_coolDownDisparo = 40;
+    private final int max_coolDownDisparo = 20;
     private int coolDownDisparo = max_coolDownDisparo;
     private boolean armaCargada = true;
 
 
     @FXML private Pane pn_ventanaNivel;
+
+
     @FXML private Label lb_Puntuacion;
+    @FXML private Label lb_Horda;
+    @FXML private ImageView imgV_vida1;
+    @FXML private ImageView imgV_vida2;
+    @FXML private ImageView imgV_vida3;
+
 
     private Escena escena = Escena.getInstance();
     private Mediator mediator = Mediator.getInstance();
 
-    public Pane getPane() {return pn_ventanaNivel;}
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         escena.setPane(pn_ventanaNivel); //Le da a Escena acceso a Pane para agregar o eliminar los elementos a renderizar
+        mediator.setPane(pn_ventanaNivel);
 
         escena.declararJugador();
 
-        declararEscudos();
-        declararEnemigos();
+        mediator.crearEscudos();
+        mediator.verificarCantidadEnemigos();
 
         pn_ventanaNivel.setFocusTraversable(true);
         pn_ventanaNivel.getChildren().add(escena.getJugador().getSpriteViewer());
@@ -51,8 +58,6 @@ public class HelloController implements Initializable {
         animator.start();
 
     }
-
-
 
     @FXML private void movePlayer(KeyEvent key){
 
@@ -69,12 +74,12 @@ public class HelloController implements Initializable {
 
             case SPACE:
             case UP:
+                escena.getJugador().disparar();
+                armaCargada = false;
+                break;
 
-                if (armaCargada){
-                    escena.getJugador().disparar();
-                    armaCargada = false;
-
-                }
+            case ENTER:
+                mediator.setPausa(!mediator.getPausa());
                 break;
 
             default:
@@ -83,71 +88,46 @@ public class HelloController implements Initializable {
 
     }
 
-    private void declararEscudos(){
-        mediator.crearEscudos();
-        int lenght = escena.getCantidadEscudos();
-
-        for (int i = 0; i < lenght; i++){
-
-            pn_ventanaNivel.getChildren().add(escena.getEscudo(i).getSpriteViewer());
-            escena.getEscudo(i).getSpriteViewer().setLayoutX(escena.getEscudo(i).getPosition()[0]);
-            escena.getEscudo(i).getSpriteViewer().setLayoutY(escena.getEscudo(i).getPosition()[1]);
-
-            //escena.getEscudo(i).getSpriteViewer().setPickOnBounds(true);
-
-            //escena.getEscudo(i).getSpriteViewer().setFitHeight(75);
-            //escena.getEscudo(i).getSpriteViewer().setFitWidth(75);
-        }
-
-    }
-
-    private void declararEnemigos(){
-        mediator.crearHorda();
-        int lenght = escena.getCantidadAliens();
-
-        for (int i = 0; i < lenght; i++){
-
-            pn_ventanaNivel.getChildren().add(escena.getAlien(i).getSpriteViewer());
-            escena.getAlien(i).getSpriteViewer().setLayoutX(escena.getAlien(i).getPosition()[0]);
-            escena.getAlien(i).getSpriteViewer().setLayoutY(escena.getAlien(i).getPosition()[1]);
-
-        }
-    }
-
 
     private void actualizarPantalla(){
 
         lb_Puntuacion.setText( mediator.getPuntuacion() + "" );
-
-        int cantidadProyectiles = escena.getCantidadProyectiles();
-
-
-        for (int i = 0; i < cantidadProyectiles; i++){
-            escena.getProyectil(i).getSpriteViewer().relocate(escena.getProyectil(i).getPosition()[0]*1d, escena.getProyectil(i).getPosition()[1]*1d);
-
-            escena.getProyectil(i).moverse();
-
-            /*
-            * Esta parte del codigo causa un conflicto al ser eliminado 2 proyectiles de forma consecutiva
-            * no detiene el juego, pero necesita revision
-            * */
-            if (escena.getProyectil(i).getPosition()[1] < 0){
-                escena.eliminarProyectil(escena.getProyectil(i));
-            }
-        }
+        lb_Horda.setText(mediator.getHorda() + "");
 
         int cantidadAliens = escena.getCantidadAliens();
+        int cantidadProyectiles = escena.getCantidadProyectiles();
+
+        if (escena.getAlienBonus() != null){
+            escena.getAlienBonus().getSpriteViewer().relocate(escena.getAlienBonus().getPosition()[0]*1d, escena.getAlienBonus().getPosition()[1]*1d);
+        }
 
         for (int i = 0; i < cantidadAliens; i++){
             escena.getAlien(i).getSpriteViewer().relocate(escena.getAlien(i).getPosition()[0]*1d, escena.getAlien(i).getPosition()[1]*1d);
         }
 
-
+        for (int i = 0; i < cantidadProyectiles; i++){
+            escena.getProyectil(i).getSpriteViewer().relocate(escena.getProyectil(i).getPosition()[0]*1d, escena.getProyectil(i).getPosition()[1]*1d);
+            escena.getProyectil(i).moverse();
+        }
 
         escena.getJugador().getSpriteViewer().relocate(escena.getJugador().getPosition()[0]* 1d, escena.getJugador().getPosition()[1]*1d);
+
+        int vida = escena.getJugador().getNivelVida();
+
+        if (vida < 1){imgV_vida3.setImage(null);}
+        else {imgV_vida3.setImage(spriteJugador);}
+
+        if (vida < 2){imgV_vida2.setImage(null);}
+        else {imgV_vida2.setImage(spriteJugador);}
+
+        if (vida < 3){imgV_vida1.setImage(null);}
+        else {imgV_vida1.setImage(spriteJugador);}
+
     }
 
-    AnimationTimer animator = new AnimationTimer() {
+
+    //Bucle para ejecutar el juego
+    private AnimationTimer animator = new AnimationTimer() {
 
         long startTime = 0;
 
@@ -160,42 +140,39 @@ public class HelloController implements Initializable {
 
             long currentTime = System.nanoTime();
             if (300 <= (currentTime - startTime)){
+
+                    if (!mediator.getPausa()){
+                        //Frames antes de mover aliens
+                        if (repeticionesParaMoverAliens >= 3){
+                            repeticionesParaMoverAliens = 0;
+                            mediator.moverHorda();
+                        }
+                        repeticionesParaMoverAliens++;
+
+
+                        //Frames antes de iniciar el disparo de un alien
+                        if (repeticionesParaDisparar >= 400){
+                            repeticionesParaDisparar = 0;
+                            mediator.setAliensDisparos();
+                        }
+                        repeticionesParaDisparar++;
+
+
+                        //Frames antes de habilitar el disparo al jugador otra vez
+                        if (coolDownDisparo <= 0){
+                            coolDownDisparo = max_coolDownDisparo;
+                            armaCargada = true;
+                        }
+                        coolDownDisparo--;
+
+
+                        mediator.verificarCantidadEnemigos();
+                        mediator.verificarColisionAlien();
+                    }
+
                 actualizarPantalla();
 
-                //Frames antes de mover aliens
-                if (repeticionesParaMoverAliens >= 3){
-                    repeticionesParaMoverAliens = 0;
-                    mediator.moverHorda();
-                }
-                repeticionesParaMoverAliens++;
-
-
-                //Frames antes de iniciar el disparo de un alien
-                if (repeticionesParaDisparar >= 400){
-                    repeticionesParaDisparar = 0;
-                    mediator.setAliensDisparos();
-                }
-                repeticionesParaDisparar++;
-
-
-                //Frames antes de habilitar el disparo al jugador otra vez
-                if (coolDownDisparo <= 0){
-                    coolDownDisparo = max_coolDownDisparo;
-                    armaCargada = true;
-                }
-                coolDownDisparo--;
-
-
-                if (escena.getCantidadAliens() < 1){
-                    declararEnemigos();
-                }
-
-                mediator.verificarColisionAlien();
-
                 startTime = currentTime;
-
-
-
             }
         }
 

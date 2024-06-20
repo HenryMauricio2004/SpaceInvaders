@@ -2,6 +2,7 @@ package Escudo;
 
 import GameObject.GameObject;
 import GameObject.DamagableObjectInterface;
+import Sprites.SpriteInterfaces.SpritesEscudosInterface;
 
 public class Escudo extends GameObject implements DamagableObjectInterface, SpritesEscudosInterface {
     private int nivelVida;
@@ -38,8 +39,6 @@ public class Escudo extends GameObject implements DamagableObjectInterface, Spri
     @Override
     public void getDamage() {
         nivelVida--;
-        System.out.println("vida Escudo: " + nivelVida);
-
         if (nivelVida > 0){ cambiarApariencia(); }
         else { System.out.println("Escudo Destruido"); }
     }
@@ -52,30 +51,41 @@ public class Escudo extends GameObject implements DamagableObjectInterface, Spri
 
         switch (nivelVida){
             case 1:
-                setSprite(spriteVida_1);
+                setSprite(spriteEscudo_1);
                 break;
             case 2:
-                setSprite(spriteVida_2);
+                setSprite(spriteEscudo_2);
                 break;
             case 3:
-                setSprite(spriteVida_3);
+                setSprite(spriteEscudo_3);
                 break;
             case 4:
-                setSprite(spriteVida_4);
+                setSprite(spriteEscudo_4);
                 break;
             case 5:
-                setSprite(spriteVida_5);
+                setSprite(spriteEscudo_5);
                 break;
             case 6:
-                setSprite(spriteVida_6);
+                setSprite(spriteEscudo_6);
                 break;
             case 7:
-                setSprite(spriteVida_7);
+                setSprite(spriteEscudo_7);
                 break;
 
             default:
 
                 break;
+        }
+
+    }
+
+    public void mostrarSprite(boolean mostrar){
+
+        if (mostrar){
+            setSprite(null);
+        }
+        else{
+            cambiarApariencia();
         }
 
     }

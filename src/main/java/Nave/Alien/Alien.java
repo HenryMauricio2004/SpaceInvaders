@@ -2,6 +2,7 @@ package Nave.Alien;
 import Escena.Mediator;
 import Nave.Ship;
 import Nave.enumDirecciones;
+import Sprites.SpriteInterfaces.AlienSpritesInterface;
 import javafx.scene.image.Image;
 
 import static java.lang.Thread.sleep;
@@ -9,7 +10,7 @@ import static java.lang.Thread.sleep;
 /**
  * Clase de Aliens
  */
-public class Alien extends Ship implements AlienSpritesInterface{
+public class Alien extends Ship implements AlienSpritesInterface {
     private int valuePoints;
     private Mediator mediador = Mediator.getInstance();
     private enumDirecciones direccion;
@@ -36,6 +37,9 @@ public class Alien extends Ship implements AlienSpritesInterface{
     public void moveY(){
         setPosicionY(getPosition()[1] + 10);
     }
+    public void moveY(int ySpeed){
+        setPosicionY(getPosition()[1] + ySpeed);
+    }
 
     public void moveX()
     {
@@ -46,6 +50,10 @@ public class Alien extends Ship implements AlienSpritesInterface{
             setPosicionX(getPosition()[0] - getxSpeed());
         }
 
+    }
+
+    public void setSpeed(int xSpeed){
+        super.setxSpeed(xSpeed);
     }
 
     /**

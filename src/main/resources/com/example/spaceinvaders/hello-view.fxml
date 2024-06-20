@@ -2,32 +2,76 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="451.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.spaceinvaders.HelloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="755.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.spaceinvaders.HelloController">
    <children>
-      <VBox layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="-6.0" layoutY="-7.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox prefHeight="48.0" prefWidth="470.0" style="-fx-background-color: GRAY;">
-               <children>
-                  <Label fx:id="lb_Puntuacion" contentDisplay="CENTER" prefHeight="50.0" prefWidth="196.0" text="000000">
-                     <font>
-                        <Font name="Nirmala UI" size="30.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Label>
-               </children></HBox>
-            <Pane fx:id="pn_ventanaNivel" onKeyPressed="#movePlayer" prefHeight="381.0" prefWidth="470.0" style="-fx-background-color: BLACK;" VBox.vgrow="ALWAYS">
+            <Pane fx:id="pn_ventanaNivel" onKeyPressed="#movePlayer" prefHeight="402.0" prefWidth="462.0" style="-fx-background-color: BLACK;" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Pane>
+            <HBox alignment="CENTER" prefHeight="53.0" prefWidth="470.0" spacing="5.0" style="-fx-background-color: white;">
+               <children>
+                  <Label fx:id="lb_Puntuacion" prefHeight="45.0" prefWidth="304.0" style="-fx-background-color: black;" text="000000" textFill="WHITE" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Nirmala UI" size="30.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <VBox alignment="TOP_CENTER" prefHeight="45.0" prefWidth="159.0" style="-fx-background-color: black;">
+                     <children>
+                        <Label contentDisplay="CENTER" text="HORDA" textFill="WHITE" />
+                        <Label fx:id="lb_Horda" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="133.0" text="0" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="17.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="328.0" spacing="10.0" style="-fx-background-color: black;" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <children>
+                        <ImageView fx:id="imgV_vida1" fitHeight="31.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../java/Sprites/player.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="imgV_vida2" fitHeight="31.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../java/Sprites/player.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="imgV_vida3" fitHeight="31.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../java/Sprites/player.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
          </children>
       </VBox>
    </children>

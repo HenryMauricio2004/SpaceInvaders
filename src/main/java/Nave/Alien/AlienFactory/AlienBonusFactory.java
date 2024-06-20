@@ -9,7 +9,7 @@ public class AlienBonusFactory implements AlienSpawner{
     /**
      * @return AlienBonus un alien con un puntaje aleatorio
      */
-    public Alien createAlien() {
+    public AlienBonus createAlien() {
         return new AlienBonus(points);
     }
 
