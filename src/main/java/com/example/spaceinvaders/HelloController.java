@@ -46,16 +46,15 @@ public class HelloController implements Initializable, PlayerSpriteInterface{
         escena.setPane(pn_ventanaNivel); //Le da a Escena acceso a Pane para agregar o eliminar los elementos a renderizar
         mediator.setPane(pn_ventanaNivel);
 
-        escena.declararJugador();
+        mediator.crearJugador();
 
         mediator.crearEscudos();
         mediator.verificarCantidadEnemigos();
 
         pn_ventanaNivel.setFocusTraversable(true);
-        pn_ventanaNivel.getChildren().add(escena.getJugador().getSpriteViewer());
 
 
-        animator.start();
+        bucleDeVentana.start();
 
     }
 
@@ -110,7 +109,11 @@ public class HelloController implements Initializable, PlayerSpriteInterface{
             escena.getProyectil(i).moverse();
         }
 
-        escena.getJugador().getSpriteViewer().relocate(escena.getJugador().getPosition()[0]* 1d, escena.getJugador().getPosition()[1]*1d);
+
+        if (!mediator.getGameOver()){
+            escena.getJugador().getSpriteViewer().relocate(escena.getJugador().getPosition()[0]* 1d, escena.getJugador().getPosition()[1]*1d);
+
+        }
 
         int vida = escena.getJugador().getNivelVida();
 
@@ -127,7 +130,7 @@ public class HelloController implements Initializable, PlayerSpriteInterface{
 
 
     //Bucle para ejecutar el juego
-    private AnimationTimer animator = new AnimationTimer() {
+    private AnimationTimer bucleDeVentana = new AnimationTimer() {
 
         long startTime = 0;
 
@@ -141,38 +144,43 @@ public class HelloController implements Initializable, PlayerSpriteInterface{
             long currentTime = System.nanoTime();
             if (300 <= (currentTime - startTime)){
 
-                    if (!mediator.getPausa()){
-                        //Frames antes de mover aliens
-                        if (repeticionesParaMoverAliens >= 3){
-                            repeticionesParaMoverAliens = 0;
-                            mediator.moverHorda();
-                        }
-                        repeticionesParaMoverAliens++;
-
-
-                        //Frames antes de iniciar el disparo de un alien
-                        if (repeticionesParaDisparar >= 400){
-                            repeticionesParaDisparar = 0;
-                            mediator.setAliensDisparos();
-                        }
-                        repeticionesParaDisparar++;
-
-
-                        //Frames antes de habilitar el disparo al jugador otra vez
-                        if (coolDownDisparo <= 0){
-                            coolDownDisparo = max_coolDownDisparo;
-                            armaCargada = true;
-                        }
-                        coolDownDisparo--;
-
-
-                        mediator.verificarCantidadEnemigos();
-                        mediator.verificarColisionAlien();
+                if (!mediator.getPausa()){
+                    //Frames antes de mover aliens
+                    if (repeticionesParaMoverAliens >= 3){
+                        repeticionesParaMoverAliens = 0;
+                        mediator.moverHorda();
                     }
+                    repeticionesParaMoverAliens++;
 
+
+                    //Frames antes de iniciar el disparo de un alien
+                    if (repeticionesParaDisparar >= 400){
+                        repeticionesParaDisparar = 0;
+                        mediator.setAliensDisparos();
+                    }
+                    repeticionesParaDisparar++;
+
+
+                    //Frames antes de habilitar el disparo al jugador otra vez
+                    if (coolDownDisparo <= 0){
+                        coolDownDisparo = max_coolDownDisparo;
+                        armaCargada = true;
+                    }
+                    coolDownDisparo--;
+
+
+                    mediator.verificarCantidadEnemigos();
+                    mediator.verificarColisionAlien();
+                }
+
+                mediator.checkarGameOver();
                 actualizarPantalla();
 
                 startTime = currentTime;
+
+                if (mediator.getGameOver()){
+                    bucleDeVentana.stop();
+                }
             }
         }
 

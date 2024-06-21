@@ -95,8 +95,11 @@ public class Escena {
 
     /**
      * Inicializa al jugador en el nivel*/
-    public void declararJugador(){
-        jugador = new Player();
+    public void agregarJugador(Player jugador){
+        this.jugador = jugador;
+        pn_ventanaNivel.getChildren().add(jugador.getSpriteViewer());
+        jugador.getSpriteViewer().setLayoutX(jugador.getPosition()[0]);
+        jugador.getSpriteViewer().setLayoutY(jugador.getPosition()[1]);
     }
 
     /**
@@ -130,6 +133,11 @@ public class Escena {
 
     /*========================================================================*/
 
+    public void eliminarJugador(){
+        pn_ventanaNivel.getChildren().remove(jugador.getSpriteViewer());
+        jugador.setSpriteViewer(null);
+    }
+
     public void eliminarAlien(Alien enemigo){
 
         pn_ventanaNivel.getChildren().remove(enemigo.getSpriteViewer());
@@ -138,8 +146,11 @@ public class Escena {
     }
 
     public void eliminarAlienBonus(){
-        pn_ventanaNivel.getChildren().remove(alienBonus.getSpriteViewer());
-        alienBonus = null;
+
+        if (alienBonus != null){
+            pn_ventanaNivel.getChildren().remove(alienBonus.getSpriteViewer());
+            alienBonus = null;
+        }
     }
 
     public void eliminarProyectil(Proyectil proyectil){

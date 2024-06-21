@@ -17,7 +17,7 @@ public class Player extends Ship implements PlayerSpriteInterface {
      * Constructor de la clase Player, donde definimos que tendra 3 de nivelVida y su velocidad inicial es 0
      */
     public Player() {
-        super(1, 20, 200, 650);
+        super(3, 20, 200, 650);
         setSprite(spriteJugador);
     }
 

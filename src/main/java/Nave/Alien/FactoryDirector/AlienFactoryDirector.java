@@ -74,7 +74,7 @@ public class AlienFactoryDirector {
         int espacioEntreColumnas = 70;
         int espacioEntreFilas = 55;
         int xInicial = 15;
-        int yInicial = 30;
+        int yInicial = 45;
 
         enumAliens alien;
 

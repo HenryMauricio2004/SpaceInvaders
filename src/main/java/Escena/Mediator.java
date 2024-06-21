@@ -12,6 +12,10 @@ import Proyectil.ProyectilFactory;
 import Escudo.Escudo;
 import GameObject.GameObject;
 import Nave.enumDirecciones;
+import Sprites.SpriteInterfaces.PlayerSpriteInterface;
+
+
+import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -19,7 +23,8 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 
 
-public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorProyectil{
+
+public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorProyectil, PlayerSpriteInterface{
 
     private Escena nivel = Escena.getInstance();
     private Puntuacion puntuacion = new Puntuacion();
@@ -30,9 +35,45 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
     private int vecesAceleracionHorda = 0;
     private int horda = 0;
     private boolean pausa = false;
+    private boolean gameOver = false;
 
     private PauseTransition pausaCreacionAlienBonus = new PauseTransition(Duration.millis(randomGenerator(2000, 4000)));
 
+    private AnimationTimer animacionGameOver = new AnimationTimer() {
+
+        int frames = 0;
+        int framesToReset = 30;
+        boolean mostrar = false;
+        int repeticiones = 0;
+
+        @Override
+        public void handle(long now) {
+
+
+            if (frames > framesToReset){
+                frames = 0;
+
+                if (mostrar){
+                    mostrarJugador();
+                    repeticiones++;
+                } else {
+                    ocultarJugador();
+                }
+
+
+                framesToReset -= 4;
+                mostrar = !mostrar;
+            }
+            frames++;
+
+            if (repeticiones >= 7){
+                animacionGameOver.stop();
+                nivel.eliminarJugador();
+            }
+        }
+
+
+    };
 
 
     private static Mediator mediador = null;
@@ -159,6 +200,10 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
 
 
 
+    public void crearJugador(){
+        nivel.agregarJugador(new Player());
+    }
+
     public void crearEscudos(){
         ArrayList<Escudo> escudos = directorEscudo.construirEscudos();
 
@@ -212,7 +257,7 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
 
     public void verificarCantidadEnemigos(){
 
-        if (nivel.getCantidadAliens() < 1){
+        if (nivel.getCantidadAliens() < 1 && !gameOver){
             horda++;
 
             int velocidadInicial = (horda +1);
@@ -251,15 +296,20 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
 
             Alien alien = nivel.getAlien(i);
 
-            if (alien.getPosition()[0] >= 750 && alien.getDireccion() == enumDirecciones.DERECHA){
-                moverAliensY();
-                setDireccionAlien(enumDirecciones.IZQUIERDA);
-                break;
-            } else if (alien.getPosition()[0] <= 10 && alien.getDireccion() == enumDirecciones.IZQUIERDA){
-                moverAliensY();
-                setDireccionAlien(enumDirecciones.DERECHA);
-                break;
+            if (alien.getPosition()[1] <= pn_ventanaNivel.getHeight() - 50){
+
+                if (alien.getPosition()[0] >= 750 && alien.getDireccion() == enumDirecciones.DERECHA){
+                    moverAliensY();
+                    setDireccionAlien(enumDirecciones.IZQUIERDA);
+                    break;
+                } else if (alien.getPosition()[0] <= 10 && alien.getDireccion() == enumDirecciones.IZQUIERDA){
+                    moverAliensY();
+                    setDireccionAlien(enumDirecciones.DERECHA);
+                    break;
+                }
+
             }
+
 
         }
 
@@ -303,6 +353,11 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
             }
         }
 
+        for (int i = 0; i< nivel.getCantidadAliens(); i++){
+            if (nivel.getAlien(i).getPosition()[1] > pn_ventanaNivel.getHeight()-30){
+                nivel.getJugador().setNivelVida(0);
+            }
+        }
 
     }
 
@@ -322,6 +377,10 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
                     nivel.eliminarEscudo(nivel.getEscudo(j));
                 }
 
+            }
+
+            if (checarColision(nivel.getAlien(i), nivel.getJugador())){
+                nivel.getJugador().setNivelVida(0);
             }
 
         }
@@ -364,5 +423,50 @@ public class Mediator implements MediadorAlien, MediadorNaveJugador, MediatorPro
         }
     }
 
+    public void checkarGameOver(){
+        if (nivel.getJugador().getNivelVida() < 1){
+            gameOver = true;
 
+            nivel.eliminarAlienBonus();
+
+            int cantidadAliens = nivel.getCantidadAliens();
+
+            while (cantidadAliens > 0){
+                nivel.eliminarAlien(nivel.getAlien(0));
+                cantidadAliens = nivel.getCantidadAliens();
+            }
+
+            int cantidadEscudos = nivel.getCantidadEscudos();
+
+            while (cantidadEscudos > 0){
+                nivel.eliminarEscudo(nivel.getEscudo(0));
+                cantidadEscudos = nivel.getCantidadEscudos();
+            }
+
+            int cantidadProyectiles = nivel.getCantidadProyectiles();
+
+            while (cantidadProyectiles > 0){
+                nivel.eliminarProyectil(nivel.getProyectil(0));
+                cantidadProyectiles = nivel.getCantidadProyectiles();
+            }
+
+            animacionGameOver();
+        }
+    }
+
+    private void ocultarJugador(){
+        nivel.getJugador().setSprite(null);
+    }
+
+    private void mostrarJugador(){
+        nivel.getJugador().setSprite(spriteJugador);
+    }
+
+    private void animacionGameOver(){
+        animacionGameOver.start();
+    }
+
+    public boolean getGameOver(){
+        return gameOver;
+    }
 }
